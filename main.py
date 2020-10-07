@@ -1,11 +1,28 @@
 #!/usr/bin/env python3
 
+import argparse
 import cv2
-import numpy as np
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description='calculate first hitting time for random walks on network')
+
+    parser.add_argument('file', help='input video file', type=str)
+    parser.add_argument('-d', '--duration', type=int, default=1)
+
+    args = parser.parse_args()
+
+    return args
 
 
 def main():
-    path = 'sample.mp4'
+
+    args = parse_args()
+
+    path = args.file
+    duration = args.duration
+
     cap = cv2.VideoCapture(path)
 
     frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
@@ -15,7 +32,7 @@ def main():
     cap.set(cv2.CAP_PROP_POS_FRAMES, 1)
     frames.append(cap.read()[1])
 
-    for i in range(2, frame_count, fps):
+    for i in range(2, frame_count, fps * duration):
         cap.set(cv2.CAP_PROP_POS_FRAMES, i)
         frame = cap.read()[1]
         frames.append(frame)
